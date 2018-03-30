@@ -14,6 +14,20 @@ Created on Fri Nov 24 10:17:43 2017
 @author: yueningli
 """
 
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Jan 14 17:24:21 2018
+@author: yueningli
+"""
+
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*-
+""" 
+Created on Fri Nov 24 10:17:43 2017
+@author: yueningli
+"""
+
 import pandas as pd
 import numpy as np
 from sklearn.utils import shuffle
@@ -22,9 +36,48 @@ columns_list = ['STATUS', 'OPERATING_SYSTEM', 'DEVICE_TYPE', 'BROWSER', 'client_
  'APPLICATION_NAME', 'client_country', 'client_city', 'client_isp', 'client_organization']
 
 def preprocessing(data,topnkey,num):
-
     user =data[data['prsId']==topnkey[num]]
 
+    length=len(user)
+    col= len(columns_list)
+    predict=np.zeros((length,col))
+    category=np.zeros((length,col))
+
+    for feature in columns_list:
+        p, c = generic_preprocessing(user, feature)
+        predict[:, columns_list.index(feature)] = p
+        category[:, columns_list.index(feature)] = c
+
+    feat_data = pd.DataFrame(predict, columns=columns_list)
+
+    return category, user, feat_data
+
+def generic_preprocessing(user, feature):
+    length = len(user)
+    pred = np.zeros((length))
+    cat = np.zeros((length))
+    mu,sigma=0,0.00001
+
+    deviceCount={}
+    for dt in user[feature]:
+        deviceCount[dt]=deviceCount.get(dt,0.0)+1.0
+    for i in range(0,length):
+        if pd.isnull(user[feature][user.index[i]]):
+            user.fillna(method='bfill')
+        pred[i]=deviceCount[user[feature][user.index[i]]]/length
+    dtlen=len(deviceCount)
+    dttmp=list(deviceCount)
+    for i in range(0,length):
+        for j in range(0,dtlen):
+            if user[feature][user.index[i]]==dttmp[j]:
+                sa=np.random.normal(mu,sigma)
+                cat[i]=j+1+sa
+
+    return pred, cat
+
+'''
+def preprocessing(data,topnkey,num):
+    user =data[data['prsId']==topnkey[num]]
     length=len(user)
     col=10
     mu,sigma=0,0.00001
@@ -164,15 +217,15 @@ def preprocessing(data,topnkey,num):
             if user['client_organization'][user.index[i]]==cotmp[j]:
                 sa=np.random.normal(mu,sigma)
                 category[i][9]=j+1+sa
-
     
     feat_data = pd.DataFrame(predict, columns=columns_list)
-
     return category,user, feat_data
-
+'''
 def add_flag(data_frame):
     os_list = np.array(data_frame['OPERATING_SYSTEM'].values)
     length = len(os_list)
+    if length == 0:
+        return data_frame
     os_list = np.sort(os_list)
     os_threshold = os_list[length//2]
     flags = np.zeros((length))
