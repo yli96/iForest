@@ -15,19 +15,19 @@ This section contains a short instruction about how to configure and run this pr
 1. `Python (>= 3.3)`
 2. `NumPy (>= 1.8.2) and SciPy (>= 0.13.3)`
 
-If you don't have `NumPy` or `SciPy` on your system, you can install them with the following command.
+If you don't have `NumPy` or `SciPy` on your system, you can install them with the following command.[2]
 ~~~~
 python3 -m pip install --user numpy scipy
 ~~~~
 3. `Pandas`
 
-`Pandas` is a data analysis library for Python. To install Pandas, you can use the following command.
+`Pandas` is a data analysis library for Python. To install Pandas, you can use the following command.[4]
 ~~~~
 pip3 install pandas
 ~~~~
 4. `scikit-learn`
 
-The library `scikit-learn` contains a set of simple tools for machine learning.
+The library `scikit-learn` contains a set of simple tools for machine learning.[3]
 ~~~~
 pip3 install scikit-learn
 ~~~~
